@@ -52,7 +52,6 @@ void draw(){
   dino.move();
   dino.show();
   updateObstacles();
-  
 }
 void drawToScreen() {
   if (!showNothing) {
@@ -63,6 +62,29 @@ void drawToScreen() {
   }
 }
 
+void dinoMove(int n){
+switch(key){
+    case '0':
+    break;
+    case '1':
+      if(dino.posY == 0){
+        dino.jump(false);
+      }
+      break;
+    case '2':
+    if(dino.posY == 0){
+        dino.jump(true);
+      }
+    break;
+    case '3':
+      if(dino.duck){
+        dino.ducking(false);
+      }else{
+        dino.ducking(true);
+      }
+      break;
+  }
+}
 void keyPressed(){
   switch(key){
     case '0':
