@@ -8,7 +8,6 @@ class Dino{
   boolean dead;
   int score;
   int gen = 0;
-
   int genomeInputs = 7;
   int genomeOutputs = 3;
 
@@ -38,6 +37,7 @@ class Dino{
   }
   
 void show() {
+  if(!dead){
     if (duck && posY == 0) {
       if (runCount < 0) {
 
@@ -61,6 +61,7 @@ void show() {
       runCount = -5;
     }
   }
+  }
   //---------------------------------------------------------------------------------------------------------------------------------------------------------
   
   void incrementCounters() {
@@ -70,13 +71,15 @@ void show() {
     }
   }
     void move() {
-    posY += velY;
-    if (posY >0) {
-      velY -= gravity;
-    } else {
-      velY = 0;
-      posY = 0;
-    }
+      if(!dead){
+        posY += velY;
+        if (posY >0) {
+          velY -= gravity;
+        } else {
+          velY = 0;
+          posY = 0;
+        }
+      }
 
     if (!replay) {
       for (int i = 0; i< obstacles.size(); i++) {

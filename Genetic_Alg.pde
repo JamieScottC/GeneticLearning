@@ -70,12 +70,10 @@ void drawToScreen() {
 }
 
 void chooseDinoMovement(int n, Dino dino){
-  println(n);
   switch(n){
     case 0:
     break;
     case 1:
-      println("jumping");
       if(dino.posY == 0){
         dino.jump(true);
       }
@@ -178,7 +176,7 @@ void resetObstacles() {
   speed = 10;
 }
 void makeTheDinos(){
-  for(int i = 0; i < 100; i++){
+  for(int i = 0; i < 1000; i++){
     testingDinos.add(new Dino());
   }
   
