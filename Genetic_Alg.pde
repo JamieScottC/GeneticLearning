@@ -1,5 +1,5 @@
-Dino dino;
 ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
+ArrayList<Dino> testingDinos = new ArrayList<Dino>();
 
 //images
 PImage dinoRun1;
@@ -24,6 +24,7 @@ int minimumTimeBetweenObstacles = 60;
 int randomAddition = 0;
 int groundCounter = 0;
 
+public int gen = 0;
 
 ArrayList<Ground> grounds = new ArrayList<Ground>();
 ArrayList<Bird> birds = new ArrayList<Bird>();
@@ -43,15 +44,21 @@ void setup(){
   manySmallCactus = loadImage("cactusSmallMany0000.png");
   bird = loadImage("berd.png");
   bird1 = loadImage("berd2.png");
-  dino = new Dino();
+  //dino = new Dino();
+  
+  makeTheDinos();
 }
 
 
 void draw(){
   drawToScreen();  
-  dino.move();
-  dino.show();
   updateObstacles();
+ 
+  for(int i = 0; i < testingDinos.size(); i++){
+    testingDinos.get(i).move();
+    testingDinos.get(i).show();
+    chooseDinoMovement(int(random(0, 4.5)), testingDinos.get(i));
+  }
 }
 void drawToScreen() {
   if (!showNothing) {
@@ -62,48 +69,29 @@ void drawToScreen() {
   }
 }
 
-void dinoMove(int n){
-switch(key){
-    case '0':
+void chooseDinoMovement(int n, Dino dino){
+  println(n);
+  switch(n){
+    case 0:
     break;
-    case '1':
+    case 1:
+      println("jumping");
       if(dino.posY == 0){
-        dino.jump(false);
-      }
-      break;
-    case '2':
-    if(dino.posY == 0){
         dino.jump(true);
       }
+      break;
+    case 2:
+    if(dino.posY == 0){
+        dino.jump(false);
+      }
     break;
-    case '3':
+    case 3:
       if(dino.duck){
         dino.ducking(false);
       }else{
         dino.ducking(true);
       }
-      break;
-  }
-}
-void keyPressed(){
-  switch(key){
-    case '0':
-      if(dino.posY == 0){
-        dino.jump(true);
-      }
-      break;
-    case '9':
-    if(dino.posY == 0){
-        dino.jump(false);
-      }
     break;
-    case '8':
-      if(dino.duck){
-        dino.ducking(false);
-      }else{
-        dino.ducking(true);
-      }
-      break;
   }
 }
 void updateObstacles() {
@@ -124,7 +112,6 @@ void updateObstacles() {
   }
 }
 void moveObstacles() {
-  println(speed);
   for (int i = 0; i< obstacles.size(); i++) {
     obstacles.get(i).move(speed);
     if (obstacles.get(i).posX < -playerXpos) { 
@@ -149,7 +136,7 @@ void moveObstacles() {
   }
 }
 void addObstacle() {
-  int lifespan = dino.lifespan;
+  int lifespan = testingDinos.get(1).lifespan;
   int tempInt;
   if (lifespan > 1000 && random(1) < 0.15) { // 15% of the time add a bird
     tempInt = floor(random(3));
@@ -189,4 +176,10 @@ void resetObstacles() {
   randomAddition = 0;
   groundCounter = 0;
   speed = 10;
+}
+void makeTheDinos(){
+  for(int i = 0; i < 100; i++){
+    testingDinos.add(new Dino());
+  }
+  
 }
