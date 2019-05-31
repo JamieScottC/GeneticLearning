@@ -85,7 +85,6 @@ void show() {
       for (int i = 0; i< obstacles.size(); i++) {
         if (obstacles.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
           dead = true;
-          println("collided");
         }
       }
 

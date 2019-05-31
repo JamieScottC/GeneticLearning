@@ -113,6 +113,7 @@ void moveObstacles() {
   for (int i = 0; i< obstacles.size(); i++) {
     obstacles.get(i).move(speed);
     if (obstacles.get(i).posX < -playerXpos) { 
+      println("removed");
       obstacles.remove(i);
       i--;
     }
@@ -179,5 +180,17 @@ void makeTheDinos(){
   for(int i = 0; i < 1000; i++){
     testingDinos.add(new Dino());
   }
+}
+  double[] getData(Dino myDino){
+  double[] data = new double[7];
+  data[0] = obstacles.get(0).posX - playerXpos;
+  data[1] = obstacles.get(1).posX - obstacles.get(0).posX;
+  data[2] = obstacles.get(0).h;
+  data[3] = obstacles.get(0).w;
+  data[4] = speed;
+  data[5] = myDino.posY;
+  //Bird or not  
+  data[6] = 1.0;
   
+  return data;
 }
