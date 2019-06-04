@@ -8,6 +8,7 @@ class Dino{
   boolean dead;
   int score;
   int gen = 0;
+
   int genomeInputs = 7;
   int genomeOutputs = 3;
 
@@ -30,14 +31,19 @@ class Dino{
   int localRandomAddition = 0;
 
   boolean duck= false;
+  
+  Brain dinoBrain;
 
   
   Dino(){
+    dinoBrain = new Brain(this);
+  }
   
+  void setBrain(Brain newBrain){
+    dinoBrain = newBrain;
   }
   
 void show() {
-  if(!dead){
     if (duck && posY == 0) {
       if (runCount < 0) {
 
@@ -61,7 +67,6 @@ void show() {
       runCount = -5;
     }
   }
-  }
   //---------------------------------------------------------------------------------------------------------------------------------------------------------
   
   void incrementCounters() {
@@ -71,20 +76,20 @@ void show() {
     }
   }
     void move() {
-      if(!dead){
-        posY += velY;
-        if (posY >0) {
-          velY -= gravity;
-        } else {
-          velY = 0;
-          posY = 0;
-        }
-      }
+    posY += velY;
+    if (posY >0) {
+      velY -= gravity;
+    } else {
+      velY = 0;
+      posY = 0;
+    }
 
     if (!replay) {
+
       for (int i = 0; i< obstacles.size(); i++) {
         if (obstacles.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
           dead = true;
+          deathCounter++;
         }
       }
 
@@ -92,10 +97,12 @@ void show() {
         if (duck && posY ==0) {
           if (birds.get(i).collided(playerXpos, posY + dinoDuck.height/2, dinoDuck.width*0.8, dinoDuck.height)) {
             dead = true;
+            deathCounter++;
           }
         } else {
           if (birds.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
             dead = true;
+            deathCounter++;
           }
         }
       }
@@ -103,6 +110,7 @@ void show() {
       for (int i = 0; i< replayObstacles.size(); i++) {
         if (replayObstacles.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
           dead = true;
+          deathCounter++;
         }
       }
 
@@ -111,10 +119,12 @@ void show() {
         if (duck && posY ==0) {
           if (replayBirds.get(i).collided(playerXpos, posY + dinoDuck.height/2, dinoDuck.width*0.8, dinoDuck.height)) {
             dead = true;
+            deathCounter++;
           }
         } else {
           if (replayBirds.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
             dead = true;
+            deathCounter++;
           }
         }
       }
@@ -208,5 +218,9 @@ void show() {
     for (int i = 0; i< replayBirds.size(); i++) {
       replayBirds.get(i).show();
     }
+  }
+  
+  void calculateFitness(){
+    fitness = score * score;
   }
 }

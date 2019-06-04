@@ -23,6 +23,7 @@ int playerXpos = 150;
 int minimumTimeBetweenObstacles = 60;
 int randomAddition = 0;
 int groundCounter = 0;
+int deathCounter;
 
 public int gen = 0;
 
@@ -70,10 +71,12 @@ void drawToScreen() {
 }
 
 void chooseDinoMovement(int n, Dino dino){
+  println(n);
   switch(n){
     case 0:
     break;
     case 1:
+      println("jumping");
       if(dino.posY == 0){
         dino.jump(true);
       }
@@ -113,7 +116,6 @@ void moveObstacles() {
   for (int i = 0; i< obstacles.size(); i++) {
     obstacles.get(i).move(speed);
     if (obstacles.get(i).posX < -playerXpos) { 
-      println("removed");
       obstacles.remove(i);
       i--;
     }
@@ -177,11 +179,13 @@ void resetObstacles() {
   speed = 10;
 }
 void makeTheDinos(){
-  for(int i = 0; i < 1000; i++){
+  for(int i = 0; i < 100; i++){
     testingDinos.add(new Dino());
   }
+  
 }
-  double[] getData(Dino myDino){
+
+double[] getData(Dino myDino){
   double[] data = new double[7];
   data[0] = obstacles.get(0).posX - playerXpos;
   data[1] = obstacles.get(1).posX - obstacles.get(0).posX;
@@ -193,4 +197,44 @@ void makeTheDinos(){
   data[6] = 1.0;
   
   return data;
+}
+
+boolean isAllDead(){
+  if(deathCounter == testingDinos.size()){
+    restart();
+  }
+}
+
+void learning(){
+  if(isAllDead()){
+    Dino mostFit;
+    mostFit = testingDinos.get(0);
+    for(int i = 1; i < testingDinos.size(); i++){
+      if(testingDinos.get(i).fitness > mostFit.fitness){
+        mostFit = testingDinos.get(i);
+      }
+    }
+    
+    Brain bestBrain = mostFit.dinoBrain;
+    
+    Dino changingDino;
+    
+    for(int i = 0; i < testingDinos.size(); i++){
+      changingDino = testingDinos.get(i);
+      
+      changingDino.setBrain(bestBrain.clone(changingDino));
+      
+      for(int j = 0; j < changingDino.dinoBrain.neuralNet.size(); j++){
+        changingDino.dinoBrain.neuralNet.get(j).mutate();
+      }
+     
+    }
+    
+    
+  }
+}
+
+
+double sigmoid(double x){
+  return (1/( 1 + Math.pow(Math.E,(-1*x))));  
 }
