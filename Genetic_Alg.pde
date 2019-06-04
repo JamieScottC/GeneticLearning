@@ -15,7 +15,7 @@ PImage bird1;
 
 boolean showNothing = false;
 
-int groundHeight = 250;
+int groundHeight = 150;
 int obstacleTimer = 0;
 float speed = 10;
 int playerXpos = 150;
@@ -44,7 +44,6 @@ void setup(){
   manySmallCactus = loadImage("cactusSmallMany0000.png");
   bird = loadImage("berd.png");
   bird1 = loadImage("berd2.png");
-  //dino = new Dino();
   
   makeTheDinos();
 }
@@ -55,9 +54,14 @@ void draw(){
   isAllDead();
  
   for(int i = 0; i < testingDinos.size(); i++){
-    testingDinos.get(i).move();
-    testingDinos.get(i).show();
-    chooseDinoMovement(int(random(0, 4.5)), testingDinos.get(i));
+    if(!testingDinos.get(i).dead){
+      testingDinos.get(i).move();
+      testingDinos.get(i).show();
+      if(obstacles.size() >= 1){
+        //println("The neural net has lit up node: " + testingDinos.get(i).dinoBrain.fireTheNet());
+        chooseDinoMovement(testingDinos.get(i).dinoBrain.fireTheNet(), testingDinos.get(i));
+      }
+    }
   }
 }
 
@@ -71,13 +75,11 @@ void drawToScreen() {
 }
 
 void chooseDinoMovement(int n, Dino dino){
-  println(n);
   switch(n){
     case 0:
     break;
     case 1:
-      println("jumping");
-      if(dino.posY == 0){
+    if(dino.posY == 0){
         dino.jump(true);
       }
       break;
@@ -194,16 +196,18 @@ void makeTheDinos(){
   
 }
 
-double[] getData(Dino myDino){
-  double[] data = new double[7];
-  data[0] = obstacles.get(0).posX - playerXpos;
-  data[1] = obstacles.get(1).posX - obstacles.get(0).posX;
-  data[2] = obstacles.get(0).h;
-  data[3] = obstacles.get(0).w;
-  data[4] = speed;
-  data[5] = myDino.posY;
+float[] getData(Dino myDino){
+  float[] data = new float[6];
+  
+  data[0] = 1.0 - ((obstacles.get(0).posX - playerXpos) / 500);
+  data[1] = obstacles.get(0).h / 120.0;
+  data[2] = obstacles.get(0).w / 120.0;
+  //data[1] = obstacles.get(1).posX - obstacles.get(0).posX;
+  
+  data[3] = speed / 100;
+  data[4] = myDino.posY / 150;
   //Bird or not  
-  data[6] = 1.0;
+  data[5] = 1.0;
   
   return data;
 }
@@ -216,7 +220,7 @@ void isAllDead(){
 }
 
 void restart(){
-  groundHeight = 250;
+  groundHeight = 150;
   obstacleTimer = 0;
   speed = 10;
   playerXpos = 150;
@@ -246,7 +250,7 @@ void learning(){
       changingDino = testingDinos.get(i);
       changingDino.setBrain(bestBrain.clone(changingDino));
       
-      for(int j = 0; j < changingDino.dinoBrain.neuralNet.size(); j++){
+      for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
         changingDino.dinoBrain.neuralNet.get(j).mutate();
       }
       
@@ -262,6 +266,6 @@ void learning(){
     
 }
 
-double sigmoid(double x){
-  return (1/( 1 + Math.pow(Math.E,(-1*x))));  
+float sigmoid(float x){
+  return (float)(1/( 1 + Math.pow(Math.E,(-1*x))));  
 }

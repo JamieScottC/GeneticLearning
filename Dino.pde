@@ -1,6 +1,6 @@
 class Dino{
   float fitness;
-
+  
   int lifespan = 0;//how long the player lived for fitness
   boolean dead;
   int score;
@@ -40,7 +40,8 @@ class Dino{
       }else{
         image(dinoJump, playerXpos - dinoJump.width/2, height - groundHeight - (posY + dinoJump.height));
       }
-      
+    }
+    
     runCount++;
     if (runCount > 5) {
       runCount = -5;
@@ -109,15 +110,6 @@ class Dino{
       gravity = 3;
     }
     duck = isDucking;
-  }
-  
-  //---------------------------------------------------------------------------------------------------------------------------------------------------------
-  //called every frame
-  void update() {
-    if(!dead){
-      incrementCounters();
-    }
-    move();
   }
   
   void calculateFitness(){
