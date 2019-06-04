@@ -13,7 +13,6 @@ PImage bigCactus;
 PImage bird;
 PImage bird1;
 
-
 boolean showNothing = false;
 
 int groundHeight = 250;
@@ -146,11 +145,11 @@ void moveObstacles() {
 void addObstacle() {
   int lifespan = testingDinos.get(1).lifespan;
   int tempInt;
-  if (lifespan > 1000 && random(1) < 0.15) { // 15% of the time add a bird
+  if (lifespan > 1000 && random(1) < 0.15){ // 15% of the time add a bird
     tempInt = floor(random(3));
     Bird temp = new Bird(tempInt);//floor(random(3)));
     birds.add(temp);
-  } else {//otherwise add a cactus
+  }else{//otherwise add a cactus
     tempInt = floor(random(3));
     Obstacle temp = new Obstacle(tempInt);//floor(random(3)));
     obstacles.add(temp);
@@ -212,6 +211,7 @@ double[] getData(Dino myDino){
 void isAllDead(){
   if(deathCounter == testingDinos.size()){
     restart();
+    learning();
   }
 }
 
@@ -239,14 +239,11 @@ void learning(){
     }
     
     Brain bestBrain = mostFit.dinoBrain;
-    
-    Dino changingDino;
-    
+    Dino changingDino; 
     gen++;
     
     for(int i = 0; i < testingDinos.size(); i++){
       changingDino = testingDinos.get(i);
-      
       changingDino.setBrain(bestBrain.clone(changingDino));
       
       for(int j = 0; j < changingDino.dinoBrain.neuralNet.size(); j++){
@@ -260,8 +257,7 @@ void learning(){
       changingDino.posY = 0;
       changingDino.velY = 0;
       changingDino.gravity = 1.2;
-      changingDino.runCount = -5;
-     
+      changingDino.runCount = -5;  
     }
     
 }
