@@ -23,7 +23,7 @@ int playerXpos = 150;
 int minimumTimeBetweenObstacles = 60;
 int randomAddition = 0;
 int groundCounter = 0;
-int deathCounter;
+int deathCounter = 0;
 
 public int gen = 0;
 
@@ -54,6 +54,7 @@ void setup(){
 void draw(){
   drawToScreen();  
   updateObstacles();
+  isAllDead();
  
   for(int i = 0; i < testingDinos.size(); i++){
     testingDinos.get(i).move();
@@ -199,14 +200,26 @@ double[] getData(Dino myDino){
   return data;
 }
 
-boolean isAllDead(){
+void isAllDead(){
   if(deathCounter == testingDinos.size()){
     restart();
   }
 }
 
+void restart(){
+  groundHeight = 250;
+  obstacleTimer = 0;
+  speed = 10;
+  playerXpos = 150;
+  minimumTimeBetweenObstacles = 60;
+  randomAddition = 0;
+  groundCounter = 0;
+  deathCounter = 0;
+  
+  obstacles.clear();
+}
+
 void learning(){
-  if(isAllDead()){
     Dino mostFit;
     mostFit = testingDinos.get(0);
     for(int i = 1; i < testingDinos.size(); i++){
@@ -227,11 +240,19 @@ void learning(){
       for(int j = 0; j < changingDino.dinoBrain.neuralNet.size(); j++){
         changingDino.dinoBrain.neuralNet.get(j).mutate();
       }
+      
+      changingDino.fitness = 0;
+      changingDino.lifespan = 0;
+      changingDino.dead = false;
+      changingDino.score = 0;
+      changingDino.posY = 0;
+      changingDino.velY = 0;
+      changingDino.gravity = 1.2;
+      changingDino.runCount = -5;
      
     }
     
-    
-  }
+    gen++;
 }
 
 

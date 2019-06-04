@@ -4,10 +4,9 @@ class Dino{
 
   float unadjustedFitness;
   int lifespan = 0;//how long the player lived for fitness
-  int bestScore =0;//stores the score achieved used for replay
+  int bestScore = 0;//stores the score achieved used for replay
   boolean dead;
   int score;
-  int gen = 0;
 
   int genomeInputs = 7;
   int genomeOutputs = 3;
@@ -89,6 +88,7 @@ void show() {
       for (int i = 0; i< obstacles.size(); i++) {
         if (obstacles.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
           dead = true;
+          calculateFitness();
           deathCounter++;
         }
       }
@@ -97,11 +97,13 @@ void show() {
         if (duck && posY ==0) {
           if (birds.get(i).collided(playerXpos, posY + dinoDuck.height/2, dinoDuck.width*0.8, dinoDuck.height)) {
             dead = true;
+            calculateFitness();
             deathCounter++;
           }
         } else {
           if (birds.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
             dead = true;
+            calculateFitness();
             deathCounter++;
           }
         }
@@ -110,6 +112,7 @@ void show() {
       for (int i = 0; i< replayObstacles.size(); i++) {
         if (replayObstacles.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
           dead = true;
+          calculateFitness();
           deathCounter++;
         }
       }
@@ -119,11 +122,13 @@ void show() {
         if (duck && posY ==0) {
           if (replayBirds.get(i).collided(playerXpos, posY + dinoDuck.height/2, dinoDuck.width*0.8, dinoDuck.height)) {
             dead = true;
+            calculateFitness();
             deathCounter++;
           }
         } else {
           if (replayBirds.get(i).collided(playerXpos, posY +dinoRun1.height/2, dinoRun1.width*0.5, dinoRun1.height)) {
             dead = true;
+            calculateFitness();
             deathCounter++;
           }
         }
@@ -152,7 +157,9 @@ void show() {
   //---------------------------------------------------------------------------------------------------------------------------------------------------------
   //called every frame
   void update() {
-    incrementCounters();
+    if(!dead){
+      incrementCounters();
+    }
     move();
   }
   void updateLocalObstacles() {

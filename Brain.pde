@@ -6,7 +6,7 @@ class Brain{
   Brain(Dino myDino){
     brainsDino = myDino;
     
-    neuralNet.add(new NeuralLayer(7, true, neuralNet.get(0))); //initializes input layer with 8 nodes
+    neuralNet.add(new NeuralLayer(7, true, null)); //initializes input layer with 8 nodes
     if(gen < 5){
       neuralNet.add(new NeuralLayer(2, false, neuralNet.get(0))); //initializes output layer with 2 node
     }

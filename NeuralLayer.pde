@@ -15,7 +15,7 @@ class NeuralLayer{
     
     if(!inp){
       lastNL = last;
-      weights = new double[size][lastNL.size];
+      weights = new double[size][lastNL.size];   
     }
     
     biases = new int[size];
@@ -50,7 +50,7 @@ class NeuralLayer{
   void randomize(){
     for(int i = 0; i < size; i++){
       biases[i] = Math.round(random(0, 10));
-      for(int j = 0; j < weights[0].length; j++){
+      for(int j = 0; j < lastNL.size; j++){
         weights[i][j] = random(-10, 10);
       }
     }
