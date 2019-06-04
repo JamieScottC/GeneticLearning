@@ -50,7 +50,6 @@ void setup(){
   makeTheDinos();
 }
 
-
 void draw(){
   drawToScreen();  
   updateObstacles();
@@ -62,6 +61,7 @@ void draw(){
     chooseDinoMovement(int(random(0, 4.5)), testingDinos.get(i));
   }
 }
+
 void drawToScreen() {
   if (!showNothing) {
     background(250); 
@@ -96,13 +96,16 @@ void chooseDinoMovement(int n, Dino dino){
     break;
   }
 }
+
 void updateObstacles() {
   obstacleTimer ++;
   speed += 0.002;
   if (obstacleTimer > minimumTimeBetweenObstacles + randomAddition) { //if the obstacle timer is high enough then add a new obstacle
     addObstacle();
   }
+  
   groundCounter ++;
+  
   if (groundCounter> 10) { //every 10 frames add a ground bit
     groundCounter =0;
     grounds.add(new Ground());
@@ -113,6 +116,7 @@ void updateObstacles() {
     showObstacles();
   }
 }
+
 void moveObstacles() {
   for (int i = 0; i< obstacles.size(); i++) {
     obstacles.get(i).move(speed);
@@ -129,6 +133,7 @@ void moveObstacles() {
       i--;
     }
   }
+  
   for (int i = 0; i < grounds.size(); i++) {
     grounds.get(i).move(speed);
     if (grounds.get(i).posX < -playerXpos) {
@@ -137,6 +142,7 @@ void moveObstacles() {
     }
   }
 }
+
 void addObstacle() {
   int lifespan = testingDinos.get(1).lifespan;
   int tempInt;
@@ -156,6 +162,7 @@ void addObstacle() {
   randomAdditionHistory.add(randomAddition);
   obstacleTimer = 0;
 }
+
 void showObstacles() {
   for (int i = 0; i< grounds.size(); i++) {
     grounds.get(i).show();
@@ -168,6 +175,7 @@ void showObstacles() {
     birds.get(i).show();
   }
 }
+
 void resetObstacles() {
   randomAdditionHistory = new ArrayList<Integer>();
   obstacleHistory = new ArrayList<Integer>();
@@ -179,6 +187,7 @@ void resetObstacles() {
   groundCounter = 0;
   speed = 10;
 }
+
 void makeTheDinos(){
   for(int i = 0; i < 100; i++){
     testingDinos.add(new Dino());
@@ -222,6 +231,7 @@ void restart(){
 void learning(){
     Dino mostFit;
     mostFit = testingDinos.get(0);
+    
     for(int i = 1; i < testingDinos.size(); i++){
       if(testingDinos.get(i).fitness > mostFit.fitness){
         mostFit = testingDinos.get(i);
@@ -231,6 +241,8 @@ void learning(){
     Brain bestBrain = mostFit.dinoBrain;
     
     Dino changingDino;
+    
+    gen++;
     
     for(int i = 0; i < testingDinos.size(); i++){
       changingDino = testingDinos.get(i);
@@ -252,9 +264,7 @@ void learning(){
      
     }
     
-    gen++;
 }
-
 
 double sigmoid(double x){
   return (1/( 1 + Math.pow(Math.E,(-1*x))));  
