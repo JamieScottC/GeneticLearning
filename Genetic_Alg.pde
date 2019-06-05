@@ -239,7 +239,9 @@ void isAllDead(){
 }
 
 void restart(){
-  bestScore = gameScore;
+  if(gameScore > bestScore){
+    bestScore = gameScore;
+  }
   
   groundHeight = 150;
   obstacleTimer = 0;
