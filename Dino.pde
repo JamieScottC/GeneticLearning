@@ -16,7 +16,7 @@ class Dino{
   Brain dinoBrain;
 
   Dino(){
-    dinoBrain = new Brain(this);
+    dinoBrain = new Brain(this);  
   }
   
   void show() {

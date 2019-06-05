@@ -14,8 +14,10 @@ class Brain{
   
   Brain clone(Dino cloneDino){
     Brain clone = new Brain(cloneDino);
-    for(int i = 0; i < neuralNet.size(); i++){
-      clone.neuralNet.set(i, neuralNet.get(i).clone());
+    
+    clone.neuralNet.set(0, neuralNet.get(0).clone(null));
+    for(int i = 1; i < neuralNet.size(); i++){
+      clone.neuralNet.set(i, neuralNet.get(i).clone(clone.neuralNet.get(i - 1)));
     }
     return clone;
   }

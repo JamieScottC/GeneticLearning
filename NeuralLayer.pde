@@ -25,8 +25,8 @@ class NeuralLayer{
     
   }
   
-  NeuralLayer clone(){
-    NeuralLayer clone = new NeuralLayer(size, input, lastNL);
+  NeuralLayer clone(NeuralLayer lastOne){
+    NeuralLayer clone = new NeuralLayer(size, input, lastOne);
     
     if(!input){
       for(int i = 0; i < size; i++){
@@ -51,7 +51,7 @@ class NeuralLayer{
         float sum = 0; //var sum = 0
 
         for(int j = 0; j < lastNL.size; j++){ //for each node in previous layer
-          sum += ((lastNL.activations[j]) * (weights[i][j])) + biases[i]; //add to sum: previous node activation * weight for this node connected to previous node + bias 
+          sum += ((lastNL.activations[j]) * (weights[i][j])) + biases[i]; //add to sum: previous node activation * weight for this node connected to previous node + bias  
         }
         
         sum = sigmoid(sum);
@@ -75,18 +75,21 @@ class NeuralLayer{
   void mutate(){
     float lower;
     float higher;
-    if(lastScore > bestScore){
+    if(bestScore > lastScore){
+      lower = 0.8;
+      higher = 1.2;
+    }else{
       lower = 0.9;
       higher = 1.1;
-    }else{
-      lower = 0.7;
-      higher = 1.3;
     }
     
     for(int i = 0; i < size; i++){
       biases[i] += Math.round(random(-1, 1));
       for(int j = 0; j < weights[0].length; j++){
         weights[i][j] *= random(lower, higher);
+        if(random(1) < 0.1){
+          weights[i][j] *= -1;
+        }
       }
     }
   
