@@ -25,7 +25,7 @@ class Brain{
   
   Brain clone(Dino cloneDino){
     Brain clone = new Brain(cloneDino);
-    clone.neuralNet.
+    clone.neuralNet = neuralNet;
     
     return clone;
   }

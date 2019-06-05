@@ -26,6 +26,7 @@ int deathCounter = 0;
 
 int gameTime = 0;
 int gameScore = 0;
+int bestScore = 0;
 
 public int gen = 0;
 
@@ -68,7 +69,8 @@ void draw(){
   text("Score: " + gameScore, 30, height - 50);
   textAlign(RIGHT);
   text("Gen: " + gen, width - 50, height - 50);
-  text("Dinos Left: " + (testingDinos.size() - deathCounter), width - 820, height - 50);
+  text("Best Score: " + bestScore, width - 1200, height - 50);
+  text("Dinos Left: " + (testingDinos.size() - deathCounter), width - 600, height - 50);
  
   for(int i = 0; i < testingDinos.size(); i++){
     if(!testingDinos.get(i).dead){
@@ -237,6 +239,8 @@ void isAllDead(){
 }
 
 void restart(){
+  bestScore = gameScore;
+  
   groundHeight = 150;
   obstacleTimer = 0;
   speed = 10;
