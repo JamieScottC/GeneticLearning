@@ -112,6 +112,12 @@ class Dino{
     duck = isDucking;
   }
   
+  Dino clone(){
+    Dino clone = new Dino();
+    clone.dinoBrain = dinoBrain.clone(this);
+    return clone;
+  }
+  
   void calculateFitness(){
     fitness = score * score;
   }

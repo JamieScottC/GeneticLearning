@@ -24,6 +24,9 @@ int randomAddition = 0;
 int groundCounter = 0;
 int deathCounter = 0;
 
+int gameTime = 0;
+int gameScore = 0;
+
 public int gen = 0;
 
 ArrayList<Ground> grounds = new ArrayList<Ground>();
@@ -32,7 +35,8 @@ ArrayList<Integer> obstacleHistory = new ArrayList<Integer>();
 ArrayList<Integer> randomAdditionHistory = new ArrayList<Integer>();
 
 void setup(){
-  size(800, 500);
+  //size(800, 500);
+  fullScreen();
   dinoRun1 = loadImage("dinorun0000.png");
   dinoRun2 = loadImage("dinorun0001.png");
   dinoJump = loadImage("dinoJump0000.png");
@@ -52,6 +56,19 @@ void draw(){
   drawToScreen();  
   updateObstacles();
   isAllDead();
+  
+  gameTime++;
+  if(gameTime % 3 == 0){
+    gameScore++;
+  }
+ 
+  fill(200);
+  textSize(40);
+  textAlign(LEFT);
+  text("Score: " + gameScore, 30, height - 50);
+  textAlign(RIGHT);
+  text("Gen: " + gen, width - 50, height - 50);
+  text("Dinos Left: " + (testingDinos.size() - deathCounter), width - 820, height - 50);
  
   for(int i = 0; i < testingDinos.size(); i++){
     if(!testingDinos.get(i).dead){
@@ -77,12 +94,12 @@ void drawToScreen() {
 void chooseDinoMovement(int n, Dino dino){
   switch(n){
     case 0:
-    break;
-    case 1:
     if(dino.posY == 0){
         dino.jump(true);
       }
       break;
+    case 1:
+    break;
     case 2:
     if(dino.posY == 0){
         dino.jump(false);
@@ -228,6 +245,8 @@ void restart(){
   randomAddition = 0;
   groundCounter = 0;
   deathCounter = 0;
+  gameTime = 0;
+  gameScore = 0;
   
   obstacles.clear();
 }

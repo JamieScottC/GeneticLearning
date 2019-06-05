@@ -25,7 +25,8 @@ class Brain{
   
   Brain clone(Dino cloneDino){
     Brain clone = new Brain(cloneDino);
-    clone.neuralNet = neuralNet;
+    clone.neuralNet.
+    
     return clone;
   }
   
@@ -53,7 +54,7 @@ class Brain{
       if(neuralNet.get(numLayers - 1).activations[j] > max){ //if current node has highest activation so far
         max = neuralNet.get(numLayers - 1).activations[j]; //set max to the activation of current node
         ind = j; //
-        println("ive found a higher activation");
+        //println("ive found a higher activation");
       }
     }
     //Causes the neural net to give a "response"
