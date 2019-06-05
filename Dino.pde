@@ -1,5 +1,5 @@
 class Dino{
-  float fitness;
+  float fitness = 0;
   
   int lifespan = 0;//how long the player lived for fitness
   boolean dead;
@@ -17,10 +17,6 @@ class Dino{
 
   Dino(){
     dinoBrain = new Brain(this);
-  }
-  
-  void setBrain(Brain newBrain){
-    dinoBrain = newBrain;
   }
   
   void show() {
@@ -114,7 +110,7 @@ class Dino{
   
   Dino clone(){
     Dino clone = new Dino();
-    clone.dinoBrain = dinoBrain.clone(this);
+    clone.dinoBrain = dinoBrain.clone(clone);
     return clone;
   }
   

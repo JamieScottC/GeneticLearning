@@ -24,6 +24,23 @@ class NeuralLayer{
     }
     
   }
+  
+  NeuralLayer clone(){
+    NeuralLayer clone = new NeuralLayer(size, input, lastNL);
+    
+    if(!input){
+      for(int i = 0; i < size; i++){
+        clone.biases[i] = biases[i];
+      }
+      for(int j = 0; j < size; j++){
+        for(int k = 0; k < weights[0].length; k++){
+          clone.weights[j][k] = weights[j][k];
+        }
+      }
+    }
+    
+    return clone;
+  }
 
   void activationFunction(Dino ourDino){
     if(input){
@@ -51,16 +68,25 @@ class NeuralLayer{
       for(int j = 0; j < lastNL.size; j++){
         weights[i][j] = random(-5, 5);
       }
-      //println(weights[i]);
     }
     
   }
   
   void mutate(){
+    float lower;
+    float higher;
+    if(lastScore > bestScore){
+      lower = 0.9;
+      higher = 1.1;
+    }else{
+      lower = 0.7;
+      higher = 1.3;
+    }
+    
     for(int i = 0; i < size; i++){
       biases[i] += Math.round(random(-1, 1));
       for(int j = 0; j < weights[0].length; j++){
-        weights[i][j] *= random(0.8, 1.2);
+        weights[i][j] *= random(lower, higher);
       }
     }
   

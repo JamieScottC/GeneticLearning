@@ -27,8 +27,13 @@ int deathCounter = 0;
 int gameTime = 0;
 int gameScore = 0;
 int bestScore = 0;
+int lastScore = 0;
 
-public int gen = 0;
+int threeTime = 0;
+
+Dino bestDino = new Dino();
+
+public int gen = 1;
 
 ArrayList<Ground> grounds = new ArrayList<Ground>();
 ArrayList<Bird> birds = new ArrayList<Bird>();
@@ -209,7 +214,7 @@ void resetObstacles() {
 }
 
 void makeTheDinos(){
-  for(int i = 0; i < 100; i++){
+  for(int i = 0; i < 200; i++){
     testingDinos.add(new Dino());
   }
   
@@ -221,7 +226,8 @@ float[] getData(Dino myDino){
   data[0] = 1.0 - ((obstacles.get(0).posX - playerXpos) / 500);
   data[1] = obstacles.get(0).h / 120.0;
   data[2] = obstacles.get(0).w / 120.0;
-  //data[1] = obstacles.get(1).posX - obstacles.get(0).posX;
+  
+  //data[6] = ((obstacles.get(1).posX - obstacles.get(0).posX) / 500);
   
   data[3] = speed / 100;
   data[4] = myDino.posY / 150;
@@ -242,6 +248,7 @@ void restart(){
   if(gameScore > bestScore){
     bestScore = gameScore;
   }
+  lastScore = gameScore;
   
   groundHeight = 150;
   obstacleTimer = 0;
@@ -267,16 +274,24 @@ void learning(){
       }
     }
     
-    Brain bestBrain = mostFit.dinoBrain;
+    if(gen == 0 || mostFit.fitness > bestDino.fitness){
+      bestDino = mostFit.clone();
+    }
+
     Dino changingDino; 
     gen++;
     
     for(int i = 0; i < testingDinos.size(); i++){
-      changingDino = testingDinos.get(i);
-      changingDino.setBrain(bestBrain.clone(changingDino));
+      if(mostFit.fitness > bestDino.fitness){
+        changingDino = mostFit.clone();
+      }else{
+        changingDino = bestDino.clone();
+      }
       
-      for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
-        changingDino.dinoBrain.neuralNet.get(j).mutate();
+      if(i != 0){
+        for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
+          changingDino.dinoBrain.neuralNet.get(j).mutate();
+        }
       }
       
       changingDino.fitness = 0;
@@ -286,7 +301,9 @@ void learning(){
       changingDino.posY = 0;
       changingDino.velY = 0;
       changingDino.gravity = 1.2;
-      changingDino.runCount = -5;  
+      changingDino.runCount = -5; 
+      
+      testingDinos.set(i, changingDino);
     }
     
 }
