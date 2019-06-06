@@ -81,6 +81,7 @@ void draw(){
     if(!testingDinos.get(i).dead){
       testingDinos.get(i).move();
       testingDinos.get(i).show();
+      testingDinos.get(i).incrementCounters();
       if(obstacles.size() >= 1){
         //println("The neural net has lit up node: " + testingDinos.get(i).dinoBrain.fireTheNet());
         chooseDinoMovement(testingDinos.get(i).dinoBrain.fireTheNet(), testingDinos.get(i));
@@ -214,7 +215,7 @@ void resetObstacles() {
 }
 
 void makeTheDinos(){
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 250; i++){
     testingDinos.add(new Dino());
   }
   fitnessNumberLine = new int[testingDinos.size()];
@@ -287,12 +288,13 @@ void learning(){
         }
       }
       
-      changingDino = testingDinos.get(chosenDinoInd).clone();
+      //changingDino = testingDinos.get(chosenDinoInd).clone();
+      changingDino = bestOverallDino.clone();
       
       for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
-        changingDino.dinoBrain.neuralNet.get(j).mutate(testingDinos.get(i).fitness);
+        //changingDino.dinoBrain.neuralNet.get(j).mutate(testingDinos.get(i).fitness);
+        changingDino.dinoBrain.neuralNet.get(j).mutate();
       }
-      println("done with dino");
       
       changingDino.fitness = 0;
       changingDino.lifespan = 0;
@@ -305,7 +307,6 @@ void learning(){
       
       testingDinos.set(i, changingDino);
     }
-    
 }
 
 void fitnessLine(){

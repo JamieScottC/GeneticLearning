@@ -72,8 +72,22 @@ class NeuralLayer{
     
   }
   
-  void mutate(float variance){
+  /*void mutate(float variance){
     variance = 10 / variance;
+    
+    for(int i = 0; i < size; i++){
+      biases[i] += Math.round(random(-1, 1));
+      for(int j = 0; j < weights[0].length; j++){
+        weights[i][j] *= random(1 - variance, 1 + variance);
+        if(random(1) < 0.05){
+          weights[i][j] *= -1;
+        }
+      }
+    }
+  }*/
+  
+  void mutate(){
+    float variance = 0.2;
     
     for(int i = 0; i < size; i++){
       biases[i] += Math.round(random(-1, 1));
