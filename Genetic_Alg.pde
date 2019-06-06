@@ -31,6 +31,7 @@ int gameTime = 0;
 int gameScore = 0;
 int bestScore = 0;
 int lastScore = 0;
+int staleCounter = 0;
 
 Dino bestOverallDino = new Dino();
 
@@ -234,24 +235,33 @@ void makeTheDinos(){
 }
 
 float[] getData(Dino myDino){
-  float[] data = new float[6];
+  float[] data = new float[7];
   
-  data[0] = 1.0 - ((obstacles.get(0).posX - playerXpos) / 500);
-  data[1] = obstacles.get(0).h / 120.0;
-  data[2] = obstacles.get(0).w / 120.0;
-  
-  //data[6] = ((obstacles.get(1).posX - obstacles.get(0).posX) / 500);
-  
-  data[3] = speed / 100;
-  data[4] = myDino.posY / 150;
-  //Bird or not  
-  data[5] = 1.0;
+  if(disToNextObstacle() <= disToNextBird()){
+    data[0] = 1.0 - ((disToNextObstacle()) / (width - playerXpos)); //Distance to next obstacle
+    data[1] = obstacles.get(0).h / 120.0; //Obstacle height
+    data[2] = obstacles.get(0).w / 120.0; //Obstacle width
+    data[3] = speed / 100; //Speed
+    data[4] = myDino.posY / 150; //Current y position of Dino
+    data[5] = 1.0; //Bias
+    data[6] = 0.0; //Default y-height of obstacle
+  }
+  else{
+    println("I've detected a bird");
+    data[0] = 1.0 - ((disToNextBird()) / (width - playerXpos)); //Distance to next obstacle
+    data[1] = birds.get(0).h / 50.0; //Obstacle height
+    data[2] = birds.get(0).w / 60.0; //Obstacle width
+    data[3] = speed / 100; //Speed
+    data[4] = myDino.posY / 150; //Current y position of Dino
+    data[5] = 1.0; //Bias
+    data[6] = birds.get(0).posY; //Default y-height of obstacle
+  }
   
   return data;
 }
 
 void isAllDead(){
-  if(deathCounter == testingDinos.size()){
+  if(deathCounter >= testingDinos.size()){
     restart();
     fitnessLine();
     learning();
@@ -261,8 +271,12 @@ void isAllDead(){
 void restart(){
   if(gameScore > bestScore){
     bestScore = gameScore;
+    staleCounter = 0;
     betterGen = true;
     updateAnalytics();
+  }
+  else{
+    staleCounter++;
   }
   lastScore = gameScore;
   
@@ -282,10 +296,15 @@ void restart(){
 }
 
 void learning(){
+    Dino mostFit = testingDinos.get(0);
     
-    for(int i = 1; i < testingDinos.size(); i++){
+    for(int i = 0; i < testingDinos.size(); i++){
       if(testingDinos.get(i).fitness > bestOverallDino.fitness){
         bestOverallDino = testingDinos.get(i);
+      }
+      
+      if(testingDinos.get(i).fitness > mostFit.fitness){
+        mostFit = testingDinos.get(i);
       }
     }
 
@@ -303,11 +322,22 @@ void learning(){
       }
       
       //changingDino = testingDinos.get(chosenDinoInd).clone();
-      changingDino = bestOverallDino.clone();
+      
+      if(staleCounter >= 10){
+        changingDino = bestOverallDino.clone();
+      }
+      else{
+        changingDino = mostFit;
+      }
       
       for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
         //changingDino.dinoBrain.neuralNet.get(j).mutate(testingDinos.get(i).fitness);
-        changingDino.dinoBrain.neuralNet.get(j).mutate(bestScore);
+        if(staleCounter == 10){
+          changingDino.dinoBrain.neuralNet.get(j).mutate(bestScore);
+        }
+        else{
+          changingDino.dinoBrain.neuralNet.get(j).mutate(lastScore);
+        }
       }
       
       changingDino.fitness = 0;
@@ -321,6 +351,10 @@ void learning(){
       
       testingDinos.set(i, changingDino);
     }
+    
+    if(staleCounter >= 10){
+      staleCounter = 0;
+    }
 }
 
 void fitnessLine(){
@@ -329,6 +363,24 @@ void fitnessLine(){
     totalFitness += testingDinos.get(i).fitness;
     fitnessNumberLine[i] = totalFitness;
   }
+}
+
+float disToNextObstacle(){
+  for(int i = 0; i < obstacles.size(); i++){
+    if((obstacles.get(i).posX - playerXpos) > 0){
+      return (obstacles.get(i).posX - playerXpos);
+    }
+  }
+  return 2000;
+}
+
+float disToNextBird(){
+  for(int i = 0; i < birds.size(); i++){
+    if((birds.get(i).posX - playerXpos) > 0){
+      return (birds.get(i).posX - playerXpos);
+    }
+  }
+  return 2000;
 }
 
 float sigmoid(float x){
