@@ -214,7 +214,7 @@ void resetObstacles() {
 }
 
 void makeTheDinos(){
-  for(int i = 0; i < 10; i++){
+  for(int i = 0; i < 5; i++){
     testingDinos.add(new Dino());
   }
   fitnessNumberLine = new int[testingDinos.size()];
@@ -292,6 +292,7 @@ void learning(){
       for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
         changingDino.dinoBrain.neuralNet.get(j).mutate(testingDinos.get(i).fitness);
       }
+      println("done with dino");
       
       changingDino.fitness = 0;
       changingDino.lifespan = 0;
