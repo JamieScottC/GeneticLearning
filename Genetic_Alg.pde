@@ -29,11 +29,12 @@ int gameScore = 0;
 int bestScore = 0;
 int lastScore = 0;
 
-int threeTime = 0;
-
-Dino bestDino = new Dino();
+Dino bestOverallDino = new Dino();
 
 public int gen = 1;
+
+int[] fitnessNumberLine;
+int totalFitness;
 
 ArrayList<Ground> grounds = new ArrayList<Ground>();
 ArrayList<Bird> birds = new ArrayList<Bird>();
@@ -72,10 +73,9 @@ void draw(){
   textSize(40);
   textAlign(LEFT);
   text("Score: " + gameScore, 30, height - 50);
-  textAlign(RIGHT);
-  text("Gen: " + gen, width - 50, height - 50);
-  text("Best Score: " + bestScore, width - 1200, height - 50);
-  text("Dinos Left: " + (testingDinos.size() - deathCounter), width - 600, height - 50);
+  text("Gen: " + gen, width - 175, height - 50);
+  text("Best Score: " + bestScore, width / 4, height - 50);
+  text("Dinos Left: " + (testingDinos.size() - deathCounter), width / 2, height - 50);
  
   for(int i = 0; i < testingDinos.size(); i++){
     if(!testingDinos.get(i).dead){
@@ -101,12 +101,12 @@ void drawToScreen() {
 void chooseDinoMovement(int n, Dino dino){
   switch(n){
     case 0:
-    break;
-    case 1:
     if(dino.posY == 0){
         dino.jump(true);
       }
       break;
+    case 1:
+    break;
     case 2:
     if(dino.posY == 0){
         dino.jump(false);
@@ -214,9 +214,10 @@ void resetObstacles() {
 }
 
 void makeTheDinos(){
-  for(int i = 0; i < 200; i++){
+  for(int i = 0; i < 10; i++){
     testingDinos.add(new Dino());
   }
+  fitnessNumberLine = new int[testingDinos.size()];
   
 }
 
@@ -240,6 +241,7 @@ float[] getData(Dino myDino){
 void isAllDead(){
   if(deathCounter == testingDinos.size()){
     restart();
+    fitnessLine();
     learning();
   }
 }
@@ -265,33 +267,30 @@ void restart(){
 }
 
 void learning(){
-    Dino mostFit;
-    mostFit = testingDinos.get(0);
     
     for(int i = 1; i < testingDinos.size(); i++){
-      if(testingDinos.get(i).fitness > mostFit.fitness){
-        mostFit = testingDinos.get(i);
+      if(testingDinos.get(i).fitness > bestOverallDino.fitness){
+        bestOverallDino = testingDinos.get(i);
       }
-    }
-    
-    if(gen == 0 || mostFit.fitness > bestDino.fitness){
-      bestDino = mostFit.clone();
     }
 
     Dino changingDino; 
     gen++;
     
     for(int i = 0; i < testingDinos.size(); i++){
-      if(mostFit.fitness > bestDino.fitness){
-        changingDino = mostFit.clone();
-      }else{
-        changingDino = bestDino.clone();
+      int chosenDinoInd = 0;
+      float rand = random(totalFitness);
+      for(int k = 0; k < fitnessNumberLine.length; k++){
+        if(rand <= fitnessNumberLine[k]){
+          chosenDinoInd = k;
+          break;
+        }
       }
       
-      if(i != 0){
-        for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
-          changingDino.dinoBrain.neuralNet.get(j).mutate();
-        }
+      changingDino = testingDinos.get(chosenDinoInd).clone();
+      
+      for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
+        changingDino.dinoBrain.neuralNet.get(j).mutate(testingDinos.get(i).fitness);
       }
       
       changingDino.fitness = 0;
@@ -306,6 +305,14 @@ void learning(){
       testingDinos.set(i, changingDino);
     }
     
+}
+
+void fitnessLine(){
+  totalFitness = 0;
+  for(int i = 0; i < testingDinos.size(); i++){
+    totalFitness += testingDinos.get(i).fitness;
+    fitnessNumberLine[i] = totalFitness;
+  }
 }
 
 float sigmoid(float x){
