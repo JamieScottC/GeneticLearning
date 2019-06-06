@@ -14,6 +14,9 @@ PImage bird;
 PImage bird1;
 
 boolean showNothing = false;
+boolean betterGen = false;
+
+int numBetterGens = 0;
 
 int groundHeight = 150;
 int obstacleTimer = 0;
@@ -99,6 +102,14 @@ void drawToScreen() {
   }
 }
 
+void updateAnalytics(){
+  textAlign(LEFT);
+  if(betterGen){
+    text("Gen " + gen, 30, numBetterGens * 40);
+    numBetterGens++;
+  }
+}
+
 void chooseDinoMovement(int n, Dino dino){
   switch(n){
     case 0:
@@ -172,7 +183,7 @@ void moveObstacles() {
 void addObstacle() {
   int lifespan = testingDinos.get(1).lifespan;
   int tempInt;
-  if (lifespan > 1000 && random(1) < 0.15){ // 15% of the time add a bird
+  if (gameTime > 1000 && random(1) < 0.15){ // 15% of the time add a bird
     tempInt = floor(random(3));
     Bird temp = new Bird(tempInt);//floor(random(3)));
     birds.add(temp);
@@ -215,7 +226,7 @@ void resetObstacles() {
 }
 
 void makeTheDinos(){
-  for(int i = 0; i < 250; i++){
+  for(int i = 0; i < 500; i++){
     testingDinos.add(new Dino());
   }
   fitnessNumberLine = new int[testingDinos.size()];
@@ -250,6 +261,8 @@ void isAllDead(){
 void restart(){
   if(gameScore > bestScore){
     bestScore = gameScore;
+    betterGen = true;
+    updateAnalytics();
   }
   lastScore = gameScore;
   
@@ -265,6 +278,7 @@ void restart(){
   gameScore = 0;
   
   obstacles.clear();
+  birds.clear();
 }
 
 void learning(){
@@ -293,7 +307,7 @@ void learning(){
       
       for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
         //changingDino.dinoBrain.neuralNet.get(j).mutate(testingDinos.get(i).fitness);
-        changingDino.dinoBrain.neuralNet.get(j).mutate();
+        changingDino.dinoBrain.neuralNet.get(j).mutate(bestScore);
       }
       
       changingDino.fitness = 0;
