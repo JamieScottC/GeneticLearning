@@ -86,8 +86,8 @@ void draw(){
       testingDinos.get(i).move();
       testingDinos.get(i).show();
       testingDinos.get(i).incrementCounters();
+      
       if(obstacles.size() >= 1){
-        //println("The neural net has lit up node: " + testingDinos.get(i).dinoBrain.fireTheNet());
         chooseDinoMovement(testingDinos.get(i).dinoBrain.fireTheNet(), testingDinos.get(i));
       }
     }
@@ -244,17 +244,16 @@ float[] getData(Dino myDino){
     data[3] = speed / 100; //Speed
     data[4] = myDino.posY / 150; //Current y position of Dino
     data[5] = 1.0; //Bias
-    data[6] = 0.0; //Default y-height of obstacle
+    data[6] = 1.0 - (35.0 / 180.0); //Default y-height of obstacle
   }
   else{
-    println("I've detected a bird");
     data[0] = 1.0 - ((disToNextBird()) / (width - playerXpos)); //Distance to next obstacle
-    data[1] = birds.get(0).h / 50.0; //Obstacle height
-    data[2] = birds.get(0).w / 60.0; //Obstacle width
+    data[1] = birds.get(0).h / 120.0; //Obstacle height
+    data[2] = birds.get(0).w / 120.0; //Obstacle width
     data[3] = speed / 100; //Speed
     data[4] = myDino.posY / 150; //Current y position of Dino
     data[5] = 1.0; //Bias
-    data[6] = birds.get(0).posY; //Default y-height of obstacle
+    data[6] = 1.0 - ((birds.get(0).posY) / 180.0); //Default y-height of obstacle
   }
   
   return data;
@@ -273,11 +272,12 @@ void restart(){
     bestScore = gameScore;
     staleCounter = 0;
     betterGen = true;
-    updateAnalytics();
+    //updateAnalytics();
   }
   else{
     staleCounter++;
   }
+  
   lastScore = gameScore;
   
   groundHeight = 150;
@@ -297,6 +297,7 @@ void restart(){
 
 void learning(){
     Dino mostFit = testingDinos.get(0);
+    int storeInd = 0;
     
     for(int i = 0; i < testingDinos.size(); i++){
       if(testingDinos.get(i).fitness > bestOverallDino.fitness){
@@ -305,8 +306,12 @@ void learning(){
       
       if(testingDinos.get(i).fitness > mostFit.fitness){
         mostFit = testingDinos.get(i);
+        storeInd = i;
       }
     }
+    
+    println("I've found a better Dino at " + storeInd);
+
 
     Dino changingDino; 
     gen++;
@@ -327,13 +332,14 @@ void learning(){
         changingDino = bestOverallDino.clone();
       }
       else{
-        changingDino = mostFit;
+        changingDino = mostFit.clone();
       }
       
       for(int j = 1; j < changingDino.dinoBrain.neuralNet.size(); j++){
         //changingDino.dinoBrain.neuralNet.get(j).mutate(testingDinos.get(i).fitness);
         if(staleCounter == 10){
           changingDino.dinoBrain.neuralNet.get(j).mutate(bestScore);
+          println("No Improvement in 10 gens");
         }
         else{
           changingDino.dinoBrain.neuralNet.get(j).mutate(lastScore);
