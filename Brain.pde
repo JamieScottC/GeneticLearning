@@ -5,10 +5,10 @@ class Brain{
   Brain(Dino myDino){
     brainsDino = myDino;
     
-    neuralNet.add(new NeuralLayer(7, true, null)); //initializes input layer with 8 nodes
-    neuralNet.add(new NeuralLayer(2, false, neuralNet.get(0))); //initializes hidden layer with 3 nodes
-    neuralNet.add(new NeuralLayer(4, false, neuralNet.get(1))); //initializes output layer with 4 nodes
-    
+    neuralNet.add(new NeuralLayer(8, true, null)); //initializes input layer with 8 nodes
+    //neuralNet.add(new NeuralLayer(3, false, neuralNet.get(0))); //initializes hidden layer with 3 nodes
+    neuralNet.add(new NeuralLayer(4, false, neuralNet.get(0))); //initializes output layer with 4 nodes
+
     
   }
   
@@ -43,7 +43,7 @@ class Brain{
     
     for(int j = 0; j < neuralNet.get(numLayers - 1).size; j++){ //for each node in the final layer
       //println("I'm node" + j + " my activation is: " + neuralNet.get(numLayers - 1).activations[j]);
-      if(neuralNet.get(numLayers - 1).activations[j] > max){ //if current node has highest activation so far
+      if(neuralNet.get(numLayers - 1).activations[j] >= max){ //if current node has highest activation so far
         max = neuralNet.get(numLayers - 1).activations[j]; //set max to the activation of current node
         ind = j; //
         //println("ive found a higher activation");
