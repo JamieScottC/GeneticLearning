@@ -13,12 +13,6 @@ class Dino{
 
   boolean duck= false;
   
-  PImage dinoRun1;
-  PImage dinoRun2;
-  PImage dinoJump;
-  PImage dinoDuck;
-  PImage dinoDuck1;
-  
   Brain dinoBrain;
 
   Dino(){
@@ -117,11 +111,6 @@ class Dino{
   Dino clone(){
     Dino clone = new Dino();
     clone.dinoBrain = dinoBrain.clone(clone);
-    clone.dinoRun1 = dinoRun1;
-    clone.dinoRun2 = dinoRun2;
-    clone.dinoJump = dinoJump;
-    clone.dinoDuck = dinoDuck;
-    clone.dinoDuck1 = dinoDuck1;
     return clone;
   }
   

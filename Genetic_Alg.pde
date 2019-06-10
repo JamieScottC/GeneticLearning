@@ -2,11 +2,11 @@ ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
 ArrayList<Dino> testingDinos = new ArrayList<Dino>();
 
 //images
-PImage dinoRun1Global;
-PImage dinoRun2Global;
-PImage dinoJumpGlobal;
-PImage dinoDuckGlobal;
-PImage dinoDuck1Global;
+PImage dinoRun1;
+PImage dinoRun2;
+PImage dinoJump;
+PImage dinoDuck;
+PImage dinoDuck1;
 
 PImage smallCactus;
 PImage manySmallCactus;
@@ -50,11 +50,11 @@ ArrayList<Integer> randomAdditionHistory = new ArrayList<Integer>();
 void setup(){
   //size(800, 500);
   fullScreen();
-  dinoRun1Global = loadImage("dinorun0000.png");
-  dinoRun2Global = loadImage("dinorun0001.png");
-  dinoJumpGlobal = loadImage("dinoJump0000.png");
-  dinoDuckGlobal = loadImage("dinoduck0000.png");
-  dinoDuck1Global = loadImage("dinoduck0001.png");
+  dinoRun1 = loadImage("dinorun0000.png");
+  dinoRun2 = loadImage("dinorun0001.png");
+  dinoJump = loadImage("dinoJump0000.png");
+  dinoDuck = loadImage("dinoduck0000.png");
+  dinoDuck1 = loadImage("dinoduck0001.png");
 
   smallCactus = loadImage("cactusSmall0000.png");
   bigCactus = loadImage("cactusBig0000.png");
@@ -82,7 +82,7 @@ void draw(){
       testingDinos.get(i).show();
       testingDinos.get(i).incrementCounters();
       
-      if(obstacles.size() >= 1 || birds.size() >= 1){
+      if(obstacles.size() >= 1 || birds.size() >= 1 && !testingDinos.get(i).dead){
         chooseDinoMovement(testingDinos.get(i).dinoBrain.fireTheNet(), testingDinos.get(i));
       }
     }
@@ -222,7 +222,7 @@ void chooseDinoMovement(int n, Dino dino){
 
 void updateObstacles() {
   obstacleTimer ++;
-  speed += 0.02;
+  speed += 0.002;
   if (obstacleTimer > minimumTimeBetweenObstacles + randomAddition) { //if the obstacle timer is high enough then add a new obstacle
     addObstacle();
   }
@@ -310,36 +310,16 @@ void resetObstacles() {
 }
 
 void makeTheDinos(){
-  for(int i = 0; i < 1000; i++){
+  for(int i = 0; i < 500; i++){
     testingDinos.add(new Dino());
-    
-    if(i == 0){
-      testingDinos.get(i).dinoRun1 = loadImage("dinorunG0000.png");
-      testingDinos.get(i).dinoRun2 = loadImage("dinorunG0001.png");
-      testingDinos.get(i).dinoJump = loadImage("dinoJumpG0000.png");
-      testingDinos.get(i).dinoDuck = loadImage("dinoduckG0000.png");
-      testingDinos.get(i).dinoDuck1 = loadImage("dinoduckG0001.png");
-    }
-    else{
-      testingDinos.get(i).dinoRun1 = dinoRun1Global;
-      testingDinos.get(i).dinoRun2 = dinoRun2Global;
-      testingDinos.get(i).dinoJump = dinoJumpGlobal;
-      testingDinos.get(i).dinoDuck = dinoDuckGlobal;
-      testingDinos.get(i).dinoDuck1 = dinoDuck1Global;
-    }
   }
 
 }
 
 float[] getData(Dino myDino){
   float[] data = new float[8];
-  
-  if(obstacles.size() == 0 && birds.size() == 0){
-    for(int i = 0; i < 8; i++){
-      data[i] = 0.0;
-    }
-  }
-  else if(disToNextObstacle() <= disToNextBird()){
+
+  if(disToNextObstacle() <= disToNextBird() && obstacles.size() > 0){
     data[0] = 1.0 - ((disToNextObstacle()) / (width - playerXpos)); //Distance to next obstacle
     data[1] = obstacles.get(0).h / 120.0; //Obstacle height
     data[2] = obstacles.get(0).w / 120.0; //Obstacle width
@@ -349,7 +329,7 @@ float[] getData(Dino myDino){
     data[6] = 1.0 - (35.0 / 180.0); //Default y-height of obstacle
     data[7] = 0.0;  //Is Bird
   }
-  else{
+  else if(birds.size() > 0){
     data[0] = 1.0 - ((disToNextBird()) / (width - playerXpos)); //Distance to next obstacle
     data[1] = birds.get(0).h / 120.0; //Obstacle height
     data[2] = birds.get(0).w / 120.0; //Obstacle width
@@ -358,6 +338,11 @@ float[] getData(Dino myDino){
     data[5] = 1.0; //Bias
     data[6] = (1.0 - ((birds.get(0).posY) / 180.0)); //Default y-height of obstacle
     data[7] = 1.0; //Is Bird
+  }
+  else{
+    for(int i = 0; i < data.length; i++){
+      data[i] = 0.0;
+    }
   }
   
   return data;

@@ -72,28 +72,6 @@ class NeuralLayer{
     
   }
   
-  void mutate(Dino parent2, int layerInd){
-    
-    for(int i = 0; i < size; i++){
-      biases[i] += random(-1, 1);
-      
-      for(int j = 0; j < weights[0].length; j++){
-        weights[i][j] += parent2.dinoBrain.neuralNet.get(layerInd).weights[i][j];
-        weights[i][j] /= 2;
-      }
-    }
-    
-    /*for(int i = 0; i < size; i++){
-      biases[i] += Math.round(random(-1, 1));
-      for(int j = 0; j < weights[0].length; j++){
-        weights[i][j] *= random(1 - variance, 1 + variance);
-        if(random(1) < 0.05){
-          weights[i][j] *= -1;
-        }
-      }
-    }*/
-  }
-  
   void mutate(float variance, int staleMod){
     variance = 400 / variance;
     variance *= (staleMod + 1) / 2;
